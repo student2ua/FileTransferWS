@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>FileTransferWS</artifactId>
+        <groupId>FileTransferWS</groupId>
+        <version>16.10</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    <version>16.10-SNAPSHOT</version>
+    <artifactId>FileTransferWSClient</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <!-- for jdk 1.6 start -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>1.12</version>
+                <!-- for jdk 1.6 end -->
+                <!-- <groupId>org.jvnet.jax-ws-commons</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <version>2.2</version>  -->
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <wsdlUrls>
+                        <wsdlUrl>http://dev:8181/v1610/wss/filetransfer?wsdl</wsdlUrl>
+                    </wsdlUrls>
+                    <!--<wsdlDirectory>${basedir}/src/main/resources/wsdl</wsdlDirectory>-->
+                    <!--<wsdlDirectory>${parent.basedir}/FileTransferWSServer/src/main/resources/wsdl</wsdlDirectory>-->
+                    <packageName>com.ecwo.fileTransfer.ws.client</packageName>
+                    <keep>true</keep>
+                    <sourceDestDir>${basedir}/src/main/java</sourceDestDir>
+                    <sei/>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
