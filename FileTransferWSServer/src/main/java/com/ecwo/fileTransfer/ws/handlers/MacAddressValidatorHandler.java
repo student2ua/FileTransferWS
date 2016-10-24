@@ -1,5 +1,9 @@
 package com.ecwo.fileTransfer.ws.handlers;
 
+import com.ecwo.fileTransfer.ws.Log4jOutputStream;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import javax.xml.ws.handler.MessageContext;
@@ -17,11 +21,13 @@ import java.util.Set;
  * http://www.mkyong.com/webservices/jax-ws/jax-ws-soap-handler-in-server-side/
  */
 public class MacAddressValidatorHandler implements SOAPHandler<SOAPMessageContext> {
+    private static final Logger log = Logger.getLogger(MacAddressValidatorHandler.class);
+    private static final Log4jOutputStream LOG_OUTPUT_STREAM = new Log4jOutputStream(log, Level.INFO);
 
     @Override
     public boolean handleMessage(SOAPMessageContext context) {
 
-        System.out.println("Server : handleMessage()......");
+        log.debug("Server : handleMessage()......");
 
         Boolean isRequest = (Boolean) context.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
@@ -59,17 +65,17 @@ public class MacAddressValidatorHandler implements SOAPHandler<SOAPMessageContex
                 //if mac address is not match, throw exception
                 // cmd getmac /fo table /v
                 //dev
-                if (!macValue.equals("20-CF-30-62-00-A3")) {
+                if (!"20-CF-30-62-00-A3".equals(macValue)) {
                     generateSOAPErrMessage(soapMsg, "Invalid mac address, access is denied.");
                 }
 
                 //tracking
-                soapMsg.writeTo(System.out);
+                soapMsg.writeTo(LOG_OUTPUT_STREAM);
 
             } catch (SOAPException e) {
-                System.err.println(e);
+                log.error(e.toString(), e);
             } catch (IOException e) {
-                System.err.println(e);
+                log.error(e.toString(), e);
             }
 
         }
@@ -81,19 +87,19 @@ public class MacAddressValidatorHandler implements SOAPHandler<SOAPMessageContex
     @Override
     public boolean handleFault(SOAPMessageContext context) {
 
-        System.out.println("Server : handleFault()......");
+        log.info("Server : handleFault()......");
 
         return true;
     }
 
     @Override
     public void close(MessageContext context) {
-        System.out.println("Server : close()......");
+        log.info("Server : close()......");
     }
 
     @Override
     public Set<QName> getHeaders() {
-        System.out.println("Server : getHeaders()......");
+        log.info("Server : getHeaders()......");
         return null;
     }
 
@@ -104,6 +110,7 @@ public class MacAddressValidatorHandler implements SOAPHandler<SOAPMessageContex
             soapFault.setFaultString(reason);
             throw new SOAPFaultException(soapFault);
         } catch (SOAPException e) {
+            log.error(e.toString(), e);
         }
     }
 }
